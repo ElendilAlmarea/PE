@@ -1,9 +1,9 @@
 #ifndef P_H
-#define P_H
+# define P_H
 
-# include <stdlib.h>
 # include <stdio.h>
-# include <math.h>
+# include <stdlib.h>
 # include <unistd.h>
+# include <math.h>
 
 #endif
