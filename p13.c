@@ -29,7 +29,7 @@ int	main(void)
 			}
 		}
 	}
-	i = 0;
+	i = -1;
 	printf("%d", ret);
 	while (++i < 10)
 		printf("%d", res[i]);
