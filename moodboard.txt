@@ -1,0 +1,6 @@
+gerer achat shop 2* 3* si reconnait pas
+gerer achat champion apres 3* si dans meme shop
+gerer lanterne
+gerer stop roll down bc already hit
+gerer plusieurs memes champions sur board
+gerer pas assey gold pour achat dans buy(shop)
