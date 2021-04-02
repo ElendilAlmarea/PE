@@ -1,6 +1,10 @@
 gerer achat shop 2* 3* si reconnait pas
 gerer achat champion apres 3* si dans meme shop
-gerer lanterne
+gerer lanterne 3-4 (et recup gold lanterne tourner autour)
 gerer stop roll down bc already hit
 gerer plusieurs memes champions sur board
 gerer pas assey gold pour achat dans buy(shop)
+items screen restants :  dummy dice
+gold interest perso dessus
+items complets
+carou bench full
