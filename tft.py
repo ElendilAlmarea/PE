@@ -87,42 +87,113 @@ def start():
     main()
 
 
+def count_champ(data):
+    count = 0
+    for i in data.shop:
+        for j in i:
+            if j in data.board_champ:
+                count += 1
+    return count
+
+
+def arrange_board(data):
+    k = 0
+    for i in data.shop:
+        k += 1
+        for j in i[::-1]:
+            if j in data.board_champ:
+                continue
+            elif j in data.bench_champ:
+                if count_champ(data) < data.level:
+                    auto.moveTo(bench)
+                else:
+                    move bench boardexist boardexist new board
+        if k == data.level:
+            break
+
+
+
 def bench_full(data):
-    return
+    if "./captures/shen_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/shen_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/shen_shop.png")] = ""
+    elif "./captures/nidalee_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/nidalee_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/nidalee_shop.png")] = ""
+    elif "./captures/sivir_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/sivir_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/sivir_shop.png")] = ""
+    elif "./captures/yuumi_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/yuumi_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/yuumi_shop.png")] = ""
+    elif "./captures/kindred_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/kindred_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/kindred_shop.png")] = ""
+    elif "./captures/teemo_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/teemo_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/teemo_shop.png")] = ""
+    elif "./captures/diana_shop.png" in data.bench_champ:
+        sell(data.bench_pos[data.bench_champ.index("./captures/diana_shop.png")], data)
+        data.bench_champ[data.bench_champ.index("./captures/diana_shop.png")] = ""
+    else:
+        sell(data.bench_pos[8], data)
+        data.bench_champ[8] = ""
 
 
 def bench_manager(data, champ):
-    return
+    if (data.bench_champ.count(champ[0]) + data.board_champ.count(champ[0])) <= 1:
+        data.bench_champ[data.bench_champ.index("")] = champ[0]
+    elif (data.bench_champ.count(champ[0]) + data.board_champ.count(champ[0])) == 2:
+        if (data.bench_champ.count(champ[1]) + data.board_champ.count(champ[1])) == 2:
+            if champ[1] in data.board_champ:
+                if data.board_champ.count(champ[1]) == 2:
+                    data.board_champ[data.board_champ.index(champ[1])] = champ[2]
+                    data.board_champ[data.board_champ.index(champ[1])] = ""
+                elif data.board_champ.count(champ[1]) == 1:
+                    data.board_champ[data.board_champ.index(champ[1])] = champ[2]
+                    data.bench_champ[data.bench_champ.index(champ[1])] = ""
+            else:
+                data.bench_champ[data.bench_champ.index(champ[1])] = champ[2]
+                data.bench_champ[data.bench_champ.index(champ[1])] = ""  
+        if champ[0] in data.board_champ:
+            if data.board_champ.count(champ[0]) == 2:
+                data.board_champ[data.board_champ.index(champ[0])] = champ[1]
+                data.board_champ[data.board_champ.index(champ[0])] = ""
+            elif data.board_champ.count(champ[0]) == 1:
+                data.board_champ[data.board_champ.index(champ[0])] = champ[1]
+                data.bench_champ[data.bench_champ.index(champ[0])] = ""
+        else:
+            data.bench_champ[data.bench_champ.index(champ[0])] = champ[1]
+            data.bench_champ[data.bench_champ.index(champ[0])] = ""            
 
 
 def buy(data):
     for i in data.shop:
         count = 0
-        while count < 5 and onscreenarea(i, data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3]):
+        gold = True
+        while gold and count < 5 and onscreenarea(i[0], data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3]) and not (i[2] in data.bench_champ or i[2] in data.board_champ):
             count += 1
             if searcharea("./captures/empty_bench_8.png", data.scan_bench_pos[8][0], data.scan_bench_pos[8][1], data.scan_bench_pos[8][2], data.scan_bench_pos[8][3], prec)[0] == -1:
-                bench_full(data)
-            pos = searcharea(i, data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3], prec)
+                if (data.bench_champ.count(i[0]) + data.board_champ.count(i[0])) < 2:
+                    bench_full(data)
+            pos = searcharea(i[0], data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3], prec)
             auto.moveTo(pos[0] + data.shop_area[0], pos[1] + data.shop_area[1], duration=random.uniform(t1, t2))
-            click_left()
+            data.save_bench_champ = data.bench_champ
+            data.save_board_champ = data.board_champ
             bench_manager(data, i)
+            click_left()
+            if pos == searcharea(i[0], data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3], prec):
+                data.bench_champ = data.save_bench_champ
+                data.board_champ = data.save_board_champ
+                gold = False
     auto.moveTo(data.loot_pos[0], duration=random.uniform(t1, t2))
-
-
-def scan_bench(data, bench):
-    capt = ["./captures/empty_bench_0.png", "./captures/empty_bench_1.png", "./captures/empty_bench_2.png", "./captures/empty_bench_3.png", "./captures/empty_bench_4.png", "./captures/empty_bench_5.png", "./captures/empty_bench_6.png", "./captures/empty_bench_7.png", "./captures/empty_bench_8.png"]
-    for i in range(0, len(bench)):
-        if searcharea(capt[i], data.scan_bench_pos[i][0], data.scan_bench_pos[i][1], data.scan_bench_pos[i][2], data.scan_bench_pos[i][3], prec)[0] == -1:
-            bench[i] = "xyz"
+    print(data.bench_champ, data.board_champ)
 
 
 def sell_loot(data):
-    new_bench = ["", "", "", "", "", "", "", "", ""]
-    scan_bench(data, new_bench)
-    for i in range(0, len(data.bench)):
-        if data.bench[i] != new_bench[i]:
+    for i in range(0, len(data.bench_champ)):
+        if data.bench_champ[i] == "":
             sell(data.bench_pos[i], data)
-            data.bench_champ[i] = ""
 
 
 def search_loot(data):
@@ -131,17 +202,11 @@ def search_loot(data):
         click_right()
         time.sleep(1)
     
+
 def sell(pos, data):
     auto.moveTo(pos, duration=random.uniform(t1, t2))
     direct.press("e")
-    # auto.moveTo(pos, duration=random.uniform(t1, t2))
-    # auto.mouseDown(duration=random.uniform(t1, t2))
-    # auto.moveTo(data.shop_pos[2], duration=random.uniform(t1, t2))
-    # auto.mouseUp(duration=random.uniform(t1, t2))
 
-def refresh(data):
-    auto.moveTo(data.refresh_pos[0], data.refresh_pos[1], duration=random.uniform(t1, t2))
-    click_left()
 
 def buy_xp(data):
     auto.moveTo(data.buy_xp_pos[0], data.buy_xp_pos[1], duration=random.uniform(t1, t2))
@@ -159,12 +224,12 @@ def spiral(data, pos, step, nb_loop):
             negx *= -1
         if i % 2 == 0:
             negy *= -1
-            t += 0.002
+            t += 0.01
         if i % 4 == 1:
             stepx += 1
         if i % 4 == 0:
             stepy += 1
-        auto.moveTo(pos[0] + negx * step * stepx, pos[1] + negy * step * stepy, duration=random.uniform(t1/5, t2/5))
+        auto.moveTo(pos[0] + negx * step * stepx, pos[1] + negy * step * stepy, duration=random.uniform(t1/3, t2/3))
         click_right()
         time.sleep(t)
     auto.moveTo(data.loot_pos[0], duration=random.uniform(t1, t2))
@@ -184,72 +249,72 @@ def put_item(data):
         if "./captures/rod.png" in data.item_bench and "./captures/chain.png" in data.item_bench:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/rod.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/rod.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/chain.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/chain.png")] = ""
             data.item_champ.append("locket")
         if not "qss" in data.item_champ and "./captures/glove.png" in data.item_bench and "./captures/negatron.png" in data.item_bench:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/glove.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/glove.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/negatron.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/negatron.png")] = ""
             data.item_champ.append("qss")
         if "./captures/belt.png" in data.item_bench and "./captures/sword.png" in data.item_bench:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/belt.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/belt.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/sword.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/sword.png")] = ""
             data.item_champ.append("zeke")
         if data.item_bench.count("./captures/sword.png") >= 2:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/sword.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/sword.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/sword.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/sword.png")] = ""
             data.item_champ.append("db")
         if ("qss" in data.item_champ or data.item_bench.count("./captures/glove.png") >= 2) and "./captures/bow.png" in data.item_bench:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/glove.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/glove.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/bow.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_champ.append("lw")
             data.item_bench[data.item_bench.index("./captures/bow.png")] = ""
         if ("qss" in data.item_champ or data.item_bench.count("./captures/glove.png") >= 2) and "./captures/tear.png" in data.item_bench:
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/glove.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/glove.png")] = ""
             auto.moveTo(data.item_pos[data.item_bench.index("./captures/tear.png")], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[0][6], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[6], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
             data.item_bench[data.item_bench.index("./captures/tear.png")] = ""
             data.item_champ.append("hoj")
@@ -278,14 +343,20 @@ def main():
         item_bench_area:    list
         board_champ:        list
         bench_champ:        list
+        save_bench_champ:   list
+        save_board_champ:   list
+        level:              list
+        shop_champ_pos:     list
 
     count = 0
+    level = 3
     item_bench = ["", "", "", "", "", "", "", "", "", ""]
     item_bench_area = [231, 422, 1034, 1055]
     item_champ = []
     slot_champ_item = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
     item = ["./captures/dice.png", "./captures/fon.png", "./captures/spatula.png", "./captures/magnet.png", "./captures/belt.png", "./captures/bow.png", "./captures/chain.png", "./captures/glove.png", "./captures/neeko.png", "./captures/negatron.png", "./captures/rod.png", "./captures/sword.png", "./captures/tear.png", "./captures/reforge.png"]
-    shop = ["./captures/tristana_shop.png", "./captures/nidalee_shop.png", "./captures/diana_shop.png", "./captures/teemo_shop.png", "./captures/sivir_shop.png", "./captures/kindred_shop.png", "./captures/yuumi_shop.png", "./captures/shen_shop.png"]
+    shop = [["./captures/tristana_shop.png", "tristana_2", "tristana_3"], ["./captures/teemo_shop.png", "teemo_2", "teemo_3"], ["./captures/diana_shop.png", "diana_2", "diana_3"], ["./captures/kindred_shop.png", "kindred_2", "kindred_3"], ["./captures/sivir_shop.png", "sivir_2", "sivir_3"], ["./captures/yuumi_shop.png", "yuumi_2", "yuumi_3"], ["./captures/nidalee_shop.png", "nidalee_2", "nidalee_3"], ["./captures/shen_shop.png", "shen_2", "shen_3"]]
+    shop_champ_pos = [6, 3, 4, 2, 5, 11, 0, 24]
     loot = ["./captures/blue_orb.png", "./captures/gold_orb.png", "./captures/white_orb.png"]
     lantern_pos = (943, 252)
     buy_xp_pos = (378, 959)
@@ -294,13 +365,15 @@ def main():
     interest_pos = [[371, 509, 447, 579], [386, 445, 460, 515], [400, 381, 478, 458], [418, 326, 486, 396], [433, 273, 503, 336]]
     bench_pos = [(407, 761), (531, 763), (649, 763), (769, 766), (885, 763), (1005, 760), (1124, 766), (1243, 765), (1364, 768)]
     bench_champ = ["", "", "", "", "", "", "", "", ""]
+    save_bench_champ = bench_champ
     scan_bench_pos = [[370, 721, 478, 851], [479, 729, 598, 837], [592, 729, 719, 837], [716, 735, 841, 837], [828, 737, 961, 838], [947, 735, 1080, 840], [1062, 736, 1198, 837], [1177, 735, 1320, 837], [1294, 733, 1440, 842]]
     shop_pos = [(575, 980), (780, 980), (985, 980), (1180, 980), (1380, 980)]
     shop_area = [454, 887, 1547, 1075]
     loot_pos = [(580 - 120, 670), (1280 + 120, 590), (610 - 120, 510), (1280 + 120, 440), (549 - 120, 383), (1304 + 120, 299), (574 - 120, 248), (1243 + 120, 194)]
-    board_pos = [[(568, 655), (698, 653), (829, 653), (956, 651), (1090, 654), (1219, 652), (1348, 656)], [(519, 572), (647, 572), (772, 570), (908, 566), (1021, 573), (1145, 572), (1268, 574)], [(598, 499), (713, 496), (837, 496), (957, 487), (1078, 491), (1198, 490), (1319, 489)], [(549, 420), (667, 426), (784, 423), (902, 421), (1015, 421), (1132, 423), (1249, 420)]]
-    board_champ = [["", "", "", "", "", "", ""], ["", "", "", "", "", "", ""], ["", "", "", "", "", "", ""], ["", "", "", "", "", "", ""]]
-    data = Data(shop, lantern_pos, buy_xp_pos, refresh_pos, interest_pos, bench_pos, scan_bench_pos, shop_pos, board_pos, item_pos, item_bench, slot_champ_item, item, loot_pos, loot, item_champ, shop_area, item_bench_area, board_champ, bench_champ)
+    board_pos = [(568, 655), (698, 653), (829, 653), (956, 651), (1090, 654), (1219, 652), (1348, 656), (519, 572), (647, 572), (772, 570), (908, 566), (1021, 573), (1145, 572), (1268, 574), (598, 499), (713, 496), (837, 496), (957, 487), (1078, 491), (1198, 490), (1319, 489), (549, 420), (667, 426), (784, 423), (902, 421), (1015, 421), (1132, 423), (1249, 420)]
+    board_champ = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+    save_board_champ = board_champ
+    data = Data(shop, lantern_pos, buy_xp_pos, refresh_pos, interest_pos, bench_pos, scan_bench_pos, shop_pos, board_pos, item_pos, item_bench, slot_champ_item, item, loot_pos, loot, item_champ, shop_area, item_bench_area, board_champ, bench_champ, save_bench_champ, save_board_champ, level, shop_champ_pos)
     while not onscreen("./captures/2-4.png"):
         anyloot = msearchcoord(data.loot, precision=prec)
         if anyloot[0] != -1:
@@ -319,27 +392,24 @@ def main():
             click_left()
             auto.moveTo(data.bench_pos[1], duration=random.uniform(t1, t2))
             auto.mouseDown(duration=random.uniform(t1, t2))
-            auto.moveTo(data.board_pos[1][3], duration=random.uniform(t1, t2))
+            auto.moveTo(data.board_pos[10], duration=random.uniform(t1, t2))
             auto.mouseUp(duration=random.uniform(t1, t2))
         if count == 1 and onscreen("./captures/2-1.png"):
             count = 3
-            sell(data.board_pos[0][3], data)
-            sell(data.board_pos[1][3], data)
-            sell(data.board_pos[2][3], data)
+            sell(data.board_pos[3], data)
+            sell(data.board_pos[10], data)
+            sell(data.board_pos[17], data)
             data.bench_champ[0] = ""
             read_item(data)
             print(data.item_bench)
         buy(data)
         time.sleep(1)
         if count == 3 and onscreen("./captures/2-2.png"):
-            count = 4
-            put_item(data)
-        if count == 4 and onscreen("./captures/2-3.png"):
             count = 5
-            buy(data)
+            put_item(data)
     while onscreen("./captures/2-4.png"):
-        auto.moveTo(928, 396, duration=random.uniform(t1, t2))
-        click_right()
+        # auto.moveTo(928, 396, duration=random.uniform(t1, t2))
+        # click_right()
         time.sleep(random.uniform(t1, t2))
     while not onscreen("./captures/2-7.png"):
         if count == 5:
@@ -350,6 +420,8 @@ def main():
             click_right()
             time.sleep(2)
             spiral(data, data.lantern_pos, 40, 2)
+            read_item(data)
+            put_item(data)
         buy(data)
         time.sleep(1)
     while not onscreen("./captures/3-4.png"):
