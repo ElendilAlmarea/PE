@@ -60,7 +60,8 @@ def imagesearcharea(image, x1, y1, x2, y2, precision=0.8):
         im = sct.grab((x1, y1, x2, y2))
         if is_retina:
             im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
-        # im.save('testarea.png') useful for debugging purposes, this will save the captured region as "testarea.png"
+        # im.save('testarea.png') usefull for debugging purposes, this will save the captured region as "testarea.png"
+
         img_rgb = np.array(im)
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         template = cv2.imread(image, 0)
@@ -70,23 +71,6 @@ def imagesearcharea(image, x1, y1, x2, y2, precision=0.8):
         if max_val < precision:
             return [-1, -1]
         return max_loc
-
-
-# def imagesearcharea(image, x1, y1, x2, y2, precision=0.8):
-    # im = region_grabber(region=(x1, y1, x2, y2))
-    # if is_retina:
-    #     im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
-    # # im.save('testarea.png') usefull for debugging purposes, this will save the captured region as "testarea.png"
-
-    # img_rgb = np.array(im)
-    # img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-    # template = cv2.imread(image, 0)
-
-    # res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
-    # min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    # if max_val < precision:
-    #     return [-1, -1]
-    # return max_loc
 
 
 '''
@@ -197,13 +181,13 @@ path to the image found, or empty string if none found
 
 '''
 
-
 def multimagesearcharea(image, x1, y1, x2, y2, precision=0.8):
     with mss.mss() as sct:
         im = sct.grab((x1, y1, x2, y2))
         if is_retina:
             im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
-        # im.save('testarea.png') useful for debugging purposes, this will save the captured region as "testarea.png"
+        # im.save('testarea.png') usefull for debugging purposes, this will save the captured region as "testarea.png"
+
         img_rgb = np.array(im)
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         
