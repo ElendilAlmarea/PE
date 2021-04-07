@@ -16,9 +16,13 @@ from dataclasses import dataclass
 auto.FAILSAFE = False
 
 global t1
-t1 = 0.05
+t1 = 0.08
 global t2
 t2 = 0.1
+global t1fast
+t1fast = 0.01
+global t2fast
+t2fast = 0.02
 global prec
 prec = 0.8
 
@@ -84,6 +88,26 @@ def start():
             auto.moveTo(search("./captures/glove_carou.png", prec))
             click_right()
     main()
+
+
+def round_start(data, stages, substage):
+    data.level = data.levels.index(msearcharea(data.levels, data.lvl_pos[0], data.lvl_pos[1], data.lvl_pos[2], data.lvl_pos[3], precision=prec)) + 2
+    sell_loot(data)
+    arrange_board(data)
+
+
+def carou(data):
+    return
+
+
+def loot(data):
+    anyloot = msearchcoord(data.loot, precision=prec)
+    if anyloot[0] != -1:
+        auto.moveTo(anyloot, duration=random.uniform(t1, t2))
+        click_right()
+        time.sleep(2)
+        spiral(data, anyloot, 40, 2)
+        sell_loot(data)
 
 
 def count_champ(data):
@@ -204,9 +228,9 @@ def bench_manager(data, champ):
             data.bench_champ[data.bench_champ.index(champ[0])] = champ[1]
             data.bench_champ[data.bench_champ.index(champ[0])] = ""            
 
-964, 716
-968, 308
+
 def buy(data):
+    time.sleep(0.1)
     if searcharea("./captures/chosen.png", data.shop_area[0], data.shop_area[1], data.shop_area[2], data.shop_area[3], 0.9)[0] != -1:
         time.sleep(2)
         return
@@ -248,7 +272,7 @@ def search_loot(data):
     
 
 def sell(pos, data):
-    auto.moveTo(pos, duration=random.uniform(t1/3, t2/3))
+    auto.moveTo(pos, duration=random.uniform(t1fast, t2fast))
     direct.press("e", _pause=False)
 
 
@@ -280,7 +304,7 @@ def read_item(data):
     for i in range(0, len(data.item_bench)):
         data.item_bench[i] = ""
     for i in range(0, len(data.item_bench)):
-        auto.moveTo(data.item_pos[i], duration=random.uniform(t1, t2))
+        auto.moveTo(data.item_pos[i], duration=random.uniform(t1fast, t2fast))
         data.item_bench[i] = msearcharea(data.item, data.item_bench_area[0], data.item_bench_area[1], data.item_bench_area[2], data.item_bench_area[3], precision=prec)
     print(data.item_bench)
 
@@ -329,7 +353,6 @@ def main():
     @dataclass
     class Data:
         shop:               list
-        lantern_pos:        tuple
         buy_xp_pos:         tuple
         refresh_pos:        tuple
         interest_pos:       list
@@ -352,6 +375,10 @@ def main():
         save_board_champ:   list
         level:              list
         shop_champ_pos:     list
+        stages:             list
+        levels:             list
+        lvl_pos:            list
+        stage_pos:          list
 
     count = 0
     carou_coord = [(964, 716), (968, 308)]
@@ -363,10 +390,14 @@ def main():
     item = ["./captures/dummy.png", "./captures/dice.png", "./captures/fon.png", "./captures/spatula.png", "./captures/magnet.png", "./captures/belt.png", "./captures/bow.png", "./captures/chain.png", "./captures/glove.png", "./captures/neeko.png", "./captures/negatron.png", "./captures/rod.png", "./captures/sword.png", "./captures/tear.png", "./captures/reforge.png"]
     shop = [["./captures/tristana_shop.png", "tristana_2", "tristana_3"], ["./captures/teemo_shop.png", "teemo_2", "teemo_3"], ["./captures/diana_shop.png", "diana_2", "diana_3"], ["./captures/kindred_shop.png", "kindred_2", "kindred_3"], ["./captures/sivir_shop.png", "sivir_2", "sivir_3"], ["./captures/yuumi_shop.png", "yuumi_2", "yuumi_3"], ["./captures/nidalee_shop.png", "nidalee_2", "nidalee_3"], ["./captures/shen_shop.png", "shen_2", "shen_3"]]
     shop_champ_pos = [6, 3, 4, 2, 5, 11, 0, 24]
-    loot = ["./captures/blue_orb.png", "./captures/gold_orb.png", "./captures/white_orb.png"]
-    lantern_pos = (943, 252)
+    loot = ["./captures/blue_orb.png", "./captures/gold_orb.png", "./captures/white_orb.png", "./captures/lanterne.png"]
+    stages = [["./captures/stage/1-1", "./captures/stage/1-2", "./captures/stage/1-3", "./captures/stage/1-4"], ["./captures/stage/2-1", "./captures/stage/2-2", "./captures/stage/2-3", "./captures/stage/2-4", "./captures/stage/2-5", "./captures/stage/2-6", "./captures/stage/2-7"], ["./captures/stage/3-1", "./captures/stage/3-2", "./captures/stage/3-3", "./captures/stage/3-4", "./captures/stage/3-5", "./captures/stage/3-6", "./captures/stage/3-7"], ["./captures/stage/4-1", "./captures/stage/4-2", "./captures/stage/4-3", "./captures/stage/4-4", "./captures/stage/4-5", "./captures/stage/4-6", "./captures/stage/4-7"]]
+    #lantern_pos = (943, 252)
+    lvl_pos = [243, 862, 363, 914]
+    stage_pos = [713, 0, 825, 48]
     buy_xp_pos = (378, 959)
     refresh_pos = (383, 1040)
+    levels = ["./captures/lvl/lvl2", "./captures/lvl/lvl3", "./captures/lvl/lvl4", "./captures/lvl/lvl5", "./captures/lvl/lvl6", "./captures/lvl/lvl7", "./captures/lvl/lvl8", "./captures/lvl/lvl9"]
     item_pos = [(289, 754), (334, 722), (305, 689), (349, 663), (330, 634), (339, 596), (380, 629), (395, 592), (440, 631), (407, 664)]
     interest_pos = [[371, 509, 447, 579], [386, 445, 460, 515], [400, 381, 478, 458], [418, 326, 486, 396], [433, 273, 503, 336]]
     bench_pos = [(407, 761), (531, 763), (649, 763), (769, 766), (885, 763), (1005, 760), (1124, 766), (1243, 765), (1364, 768)]
@@ -379,16 +410,18 @@ def main():
     board_pos = [(568, 655), (698, 653), (829, 653), (956, 651), (1090, 654), (1219, 652), (1348, 656), (519, 572), (647, 572), (772, 570), (908, 566), (1021, 573), (1145, 572), (1268, 574), (598, 499), (713, 496), (837, 496), (957, 487), (1078, 491), (1198, 490), (1319, 489), (547, 433), (667, 426), (784, 423), (902, 421), (1015, 421), (1132, 423), (1249, 420)]
     board_champ = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
     save_board_champ = board_champ
-    data = Data(shop, lantern_pos, buy_xp_pos, refresh_pos, interest_pos, bench_pos, scan_bench_pos, shop_pos, board_pos, item_pos, item_bench, slot_champ_item, item, loot_pos, loot, item_champ, shop_area, item_bench_area, board_champ, bench_champ, save_bench_champ, save_board_champ, level, shop_champ_pos)
+    data = Data(shop, buy_xp_pos, refresh_pos, interest_pos, bench_pos, scan_bench_pos, shop_pos, board_pos, item_pos, item_bench, slot_champ_item, item, loot_pos, loot, item_champ, shop_area, item_bench_area, board_champ, bench_champ, save_bench_champ, save_board_champ, level, shop_champ_pos, stages, levels, lvl_pos, stage_pos)
+    for stage in data.stages:
+        for substage in stage:
+            round_start(data, stage, substage)
+            if substage == "./captures/stage/1-1" or stage.index(substage) == 3:
+                carou(data)
+            else:
+                while onscreenarea(substage, data.stage_pos[0], data.stage_pos[1], data.stage_pos[2], data.stage_pos[3]):
+                    loot(data)
+
+
     while not onscreen("./captures/2-4.png"):
-        anyloot = msearchcoord(data.loot, precision=prec)
-        if anyloot[0] != -1:
-            auto.moveTo(anyloot, duration=random.uniform(t1, t2))
-            click_right()
-            time.sleep(2)
-            spiral(data, anyloot, 40, 2)
-            sell_loot(data)
-            continue
         if count == 0 and onscreen("./captures/1-3.png"):
             count = 1
             sell(data.board_pos[3], data)
@@ -448,9 +481,7 @@ def main():
             arrange_board(data)
             put_item(data)
     while onscreen("./captures/2-4.png"):
-        # auto.moveTo(928, 396, duration=random.uniform(t1, t2))
-        # click_right()
-        time.sleep(1)
+        continue
     while not onscreen("./captures/2-7.png"):
         if count == 5:
             count = 6
@@ -488,14 +519,15 @@ def main():
 
 
 # Start auth + main script
-# while (1):
-#     time.sleep(5)
-#     auto.alert(auto.position())
+while (1):
+    time.sleep(5)
+    auto.alert(auto.position())
 start()
 auto.alert("Press OK when you're in a TFT lobby!\n")
 print("Bot started, queuing up!")
 queue()
 # End auth + main script
 #video graphics quality medium
-#full screen on my laptop
+#client res 1024x576
+#ig res 1920x1080
 #classic skin board legend boom

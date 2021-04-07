@@ -115,7 +115,7 @@ the top left corner coordinates of the element if found as an array [x,y] or [-1
 
 def imagesearch(image, precision=0.8):
     with mss.mss() as sct:
-        im = sct.grab(sct.monitors[0])
+        im = sct.grab((0, 0, 1920, 1080))
         if is_retina:
             im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
         # im.save('testarea.png') useful for debugging purposes, this will save the captured region as "testarea.png"
@@ -149,7 +149,7 @@ path to the image found, or empty string if none found
 
 def multimagesearch(image, precision=0.8):
     with mss.mss() as sct:
-        im = sct.grab(sct.monitors[0])
+        im = sct.grab((0, 0, 1920, 1080))
         if is_retina:
             im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
         # im.save('testarea.png') useful for debugging purposes, this will save the captured region as "testarea.png"
@@ -220,7 +220,7 @@ coord of the image found, or [-1, -1] if none found
 
 def multimagesearchcoord(image, precision=0.8):
     with mss.mss() as sct:
-        im = sct.grab(sct.monitors[0])
+        im = sct.grab((0, 0, 1920, 1080))
         if is_retina:
             im.thumbnail((round(im.size[0] * 0.5), round(im.size[1] * 0.5)))
         # im.save('testarea.png') useful for debugging purposes, this will save the captured region as "testarea.png"
