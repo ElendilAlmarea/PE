@@ -1,9 +1,4 @@
-gerer lanterne 3-4
 gerer stop roll down bc already hit
-gerer pas assey gold pour achat dans buy(shop)
-gold interest perso dessus
-items complets
 carou bench full
 carou champ transform 2*
 multi shop same champ instant star with bench full
-vendre premiers champions pour acheter les shop_champ
